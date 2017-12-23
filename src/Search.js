@@ -4,32 +4,29 @@ import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import Shelf from './Shelf'
+import * as BooksAPI from './BooksAPI'
 
 class Search extends Component{
   static propTypes = {
-    books: PropTypes.array,
     onUpdate:PropTypes.func
   }
   state = {
-    query: ''
+    query: '',
+    showingBooks:[]
   }
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
   }
 
   render(){
-    const { books, onUpdate } = this.props
+    const { onUpdate } = this.props
     const { query } = this.state
-    console.log(books)
 
-    let showingBooks
     if (query) {
-      const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = books.filter((book) => match.test(book.title))
-    } else {
-      showingBooks = []
-    }
-    showingBooks.sort(sortBy('title'))
+      BooksAPI.search(query).then((showingBooks)=>{
+        this.setState({showingBooks})
+      })
+    } 
 
     return (
       <div className="search-books">
@@ -51,7 +48,7 @@ class Search extends Component{
         <div className="search-books-results">
           <ol className="books-grid">
             <Shelf
-              books={showingBooks}
+              books={this.state.showingBooks}
               onUpdate={this.props.onUpdate}
             />
           </ol>
