@@ -16,17 +16,16 @@ class Search extends Component{
   }
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
+    if (query) {
+      BooksAPI.search(query).then((showingBooks)=>{
+        this.setState({showingBooks})
+      })
+    }
   }
 
   render(){
     const { onUpdate } = this.props
     const { query } = this.state
-
-    if (query) {
-      BooksAPI.search(query).then((showingBooks)=>{
-        this.setState({showingBooks})
-      })
-    } 
 
     return (
       <div className="search-books">
