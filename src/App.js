@@ -15,15 +15,23 @@ class BooksApp extends React.Component {
       this.setState({ books })
     })
   }
+  updateShelf(book,shelf){
+    BooksAPI.update(book, shelf)
+    let updatedBooks = this.state.books.map(boo => {
+      boo.id===book.id &&(
+        boo = book)})
+    this.setState({books: updatedBooks})
+  }
+
   shelfTitle=["currentlyReading","wantToRead","read"]  
 
   render() {
-    console.log(this.shelfTitle[0])
     return (
       <div className="app">
         <Route path='/search' render={()=>(
           <Search
             books={this.state.books}
+            onUpdate={this.updateShelf}
           />
           )}/>
 
@@ -37,22 +45,22 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>
                   <Shelf
-                    shelf_={this.shelfTitle[0]}
-                    books ={this.state.books}
+                    books={this.state.books.filter((book) => book.shelf===this.shelfTitle[0] )}
+                    onUpdate={this.updateShelf}
                   />
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
                   <Shelf
-                    shelf_={this.shelfTitle[1]}
-                    books ={this.state.books}
+                    books={this.state.books.filter((book) => book.shelf===this.shelfTitle[1] )}
+                    onUpdate={this.updateShelf}
                   />
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                   <Shelf
-                    shelf_={this.shelfTitle[2]}
-                    books ={this.state.books}
+                    books={this.state.books.filter((book) => book.shelf===this.shelfTitle[2] )}
+                    onUpdate={this.updateShelf}
                   />
                 </div>
               </div>
