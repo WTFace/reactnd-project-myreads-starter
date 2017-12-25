@@ -28,6 +28,9 @@ class Search extends Component{
           }
         })
         this.setState({returnedBooks})
+      }).catch(function (err) {
+        this.setState({query:'',returnedBooks:[]})
+        console.log(err)
       })
     }
   }
