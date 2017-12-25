@@ -8,23 +8,32 @@ import * as BooksAPI from './BooksAPI'
 
 class Search extends Component{
   static propTypes = {
-    onUpdate:PropTypes.func
+    onUpdate:PropTypes.func,
+    books:PropTypes.array
   }
   state = {
     query: '',
-    showingBooks:[]
+    returnedBooks:[]
   }
   updateQuery = (query) => {
     this.setState({ query: query.trim() })
     if (query) {
-      BooksAPI.search(query).then((showingBooks)=>{
-        this.setState({showingBooks})
+      BooksAPI.search(query).then((returnedBooks)=>{
+        returnedBooks.map( book =>{
+          for(const b of this.props.books){
+            if (book.id === b.id) {
+              book.shelf= b.shelf
+              break
+            }
+          }
+        })
+        this.setState({returnedBooks})
       })
     }
   }
 
   render(){
-    const { onUpdate } = this.props
+    const { onUpdate, books } = this.props
     const { query } = this.state
 
     return (
@@ -47,7 +56,7 @@ class Search extends Component{
         <div className="search-books-results">
           <ol className="books-grid">
             <Shelf
-              books={this.state.showingBooks}
+              books={this.state.returnedBooks}
               onUpdate={this.props.onUpdate}
             />
           </ol>
